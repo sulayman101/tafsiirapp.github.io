@@ -4,174 +4,89 @@
   <meta charset="UTF-8" />
   <title>Tafsiir App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#14b8a6',
-            dark: '#020617'
-          }
-        }
-      }
-    }
-  </script>
 </head>
 
-<body class="bg-dark text-white min-h-screen">
+<body class="bg-slate-950 text-white min-h-screen">
 
-  <!-- App Container -->
-  <div class="max-w-md mx-auto px-4 py-4 pb-24">
+<div class="max-w-md mx-auto px-4 py-4">
 
-    <!-- Header -->
-    <header class="flex items-center gap-3 mb-4">
-      <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-black">
-        T
-      </div>
-      <div>
-        <h1 class="text-xl font-bold">Tafsiir App</h1>
-        <p class="text-xs text-gray-400">Qur'an Tafsiir Audio</p>
-      </div>
-    </header>
-
-    <!-- Search -->
-    <input
-      id="search"
-      type="text"
-      placeholder="Search tafsiir..."
-      class="w-full mb-4 px-4 py-2 rounded-full bg-slate-900 border border-slate-700 text-sm focus:outline-none focus:border-primary"
-    />
-
-    <!-- Grid -->
-    <main id="grid" class="grid grid-cols-2 gap-3"></main>
-
-  </div>
-
-  <!-- Mini Player -->
-  <div
-    id="player"
-    class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-md hidden"
-  >
-    <div class="bg-slate-900 border border-slate-700 rounded-full px-4 py-2 flex items-center gap-3">
-      <button
-        id="playPause"
-        class="w-9 h-9 rounded-full bg-primary text-black flex items-center justify-center"
-      >
-        ▶
-      </button>
-      <div class="overflow-hidden">
-        <p id="nowTitle" class="text-sm font-semibold truncate">—</p>
-        <p id="nowMeta" class="text-xs text-gray-400">Paused</p>
-      </div>
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-4">
+    <div class="w-10 h-10 rounded-full bg-teal-500 flex items-center justify-center font-bold text-black">T</div>
+    <div>
+      <h1 class="text-xl font-bold">Tafsiir App</h1>
+      <p class="text-xs text-gray-400">Qur'an Tafsiir Audio</p>
     </div>
   </div>
 
-  <!-- JavaScript -->
-  <script>
-    const data = [
-      {
-        id: 1,
-        title: "Tafsiir Al-Faatiha",
-        sheikh: "Sheikh Example",
-        audio: "audio/faatiha.mp3",
-        image: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg"
-      },
-      {
-        id: 2,
-        title: "Ayatul Kursi Tafsiir",
-        sheikh: "Sheikh Example",
-        audio: "audio/kursi.mp3",
-        image: "https://images.pexels.com/photos/532792/pexels-photo-532792.jpeg"
-      },
-      {
-        id: 3,
-        title: "Juz Amma (Part 1)",
-        sheikh: "Sheikh Example",
-        audio: "audio/juz1.mp3",
-        image: "https://images.pexels.com/photos/243316/pexels-photo-243316.jpeg"
-      },
-      {
-        id: 4,
-        title: "Surah Yaasin Tafsiir",
-        sheikh: "Sheikh Example",
-        audio: "audio/yaasin.mp3",
-        image: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg"
-      }
-    ];
+  <!-- Search -->
+  <input
+    id="search"
+    type="text"
+    placeholder="Search sheikh..."
+    class="w-full mb-4 px-4 py-2 rounded-full bg-slate-900 border border-slate-700 text-sm"
+  />
 
-    const grid = document.getElementById("grid");
-    const search = document.getElementById("search");
-    const player = document.getElementById("player");
-    const playPause = document.getElementById("playPause");
-    const nowTitle = document.getElementById("nowTitle");
-    const nowMeta = document.getElementById("nowMeta");
+  <!-- Grid -->
+  <div id="grid" class="grid grid-cols-2 gap-3"></div>
 
-    const audio = new Audio();
-    let currentId = null;
+</div>
 
-    function render(list) {
-      grid.innerHTML = "";
-      list.forEach(item => {
-        const card = document.createElement("div");
-        card.className =
-          "bg-slate-900 border border-slate-800 rounded-xl p-2 flex flex-col gap-2";
+<script>
+const sheikhs = [
+  {
+    id: "omar-faruq",
+    name: "Sheikh Omar Faruq",
+    image: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg"
+  },
+  {
+    id: "umul",
+    name: "Sheikh Umul",
+    image: "https://images.pexels.com/photos/532792/pexels-photo-532792.jpeg"
+  },
+  {
+    id: "abdulbasit",
+    name: "Sheikh Abdulbasit",
+    image: "https://images.pexels.com/photos/243316/pexels-photo-243316.jpeg"
+  },
+  {
+    id: "sudais",
+    name: "Sheikh Sudais",
+    image: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg"
+  }
+];
 
-        card.innerHTML = `
-          <h3 class="text-sm font-semibold leading-tight min-h-[2.5rem]">
-            ${item.title}
-          </h3>
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
 
-          <img
-            src="${item.image}"
-            class="rounded-lg aspect-[4/3] object-cover"
-          />
+function render(list) {
+  grid.innerHTML = "";
+  list.forEach(s => {
+    const card = document.createElement("div");
+    card.className =
+      "bg-slate-900 rounded-xl p-2 cursor-pointer hover:ring-2 hover:ring-teal-500";
 
-          <button
-            class="mt-1 text-xs text-primary border border-primary/30 rounded-full py-1"
-          >
-            ▶ Play
-          </button>
-        `;
+    card.innerHTML = `
+      <h3 class="text-sm font-semibold mb-2">${s.name}</h3>
+      <img src="${s.image}" class="rounded-lg aspect-[4/3] object-cover" />
+    `;
 
-        card.querySelector("button").onclick = () => play(item);
-        grid.appendChild(card);
-      });
-    }
-
-    function play(item) {
-      if (currentId === item.id && !audio.paused) {
-        audio.pause();
-        return;
-      }
-
-      audio.src = item.audio;
-      audio.play().catch(() => alert("Audio file not found"));
-      currentId = item.id;
-
-      nowTitle.textContent = item.title;
-      nowMeta.textContent = item.sheikh;
-      player.classList.remove("hidden");
-    }
-
-    playPause.onclick = () => {
-      if (audio.paused) audio.play();
-      else audio.pause();
+    card.onclick = () => {
+      window.location.href = `sheikh.html?id=${s.id}`;
     };
 
-    audio.onplay = () => playPause.textContent = "⏸";
-    audio.onpause = () => playPause.textContent = "▶";
+    grid.appendChild(card);
+  });
+}
 
-    search.oninput = () => {
-      const v = search.value.toLowerCase();
-      render(data.filter(d => d.title.toLowerCase().includes(v)));
-    };
+search.oninput = () => {
+  const v = search.value.toLowerCase();
+  render(sheikhs.filter(s => s.name.toLowerCase().includes(v)));
+};
 
-    render(data);
-  </script>
+render(sheikhs);
+</script>
 
 </body>
 </html>
