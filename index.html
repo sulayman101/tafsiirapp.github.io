@@ -5,592 +5,173 @@
   <title>Tafsiir App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    :root {
-      --bg: #050816;
-      --bg-soft: #0b1020;
-      --card: #141a2a;
-      --accent: #2dd4bf;
-      --accent-soft: rgba(45, 212, 191, 0.15);
-      --text: #f9fafb;
-      --text-soft: #9ca3af;
-      --danger: #f97373;
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.45);
-    }
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-    }
-
-    .app-shell {
-      max-width: 480px; /* mobile-sized shell */
-      width: 100%;
-      min-height: 100vh;
-      padding: 1rem 1rem 6rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* --- Header --- */
-    .app-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-
-    .logo-circle {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      background: linear-gradient(145deg, var(--accent), #22c55e);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #022c22;
-      font-weight: 800;
-      box-shadow: var(--shadow-soft);
-      letter-spacing: 0.04em;
-    }
-
-    .app-title-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.1rem;
-    }
-
-    .app-title {
-      font-size: 1.35rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-    }
-
-    .app-subtitle {
-      font-size: 0.78rem;
-      color: var(--text-soft);
-    }
-
-    /* --- Search / Filter row --- */
-    .top-controls {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .search-input {
-      flex: 1;
-      position: relative;
-    }
-
-    .search-input input {
-      width: 100%;
-      padding: 0.6rem 2.1rem 0.6rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      background: rgba(15, 23, 42, 0.85);
-      color: var(--text);
-      font-size: 0.85rem;
-      outline: none;
-      backdrop-filter: blur(14px);
-    }
-
-    .search-input input::placeholder {
-      color: #6b7280;
-    }
-
-    .search-input-icon {
-      position: absolute;
-      right: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.9rem;
-      color: #6b7280;
-      pointer-events: none;
-    }
-
-    .filter-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-      padding: 0.4rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid var(--accent-soft);
-      font-size: 0.78rem;
-      color: var(--accent);
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    /* --- Section title --- */
-    .section-heading {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 0.3rem 0 0.75rem;
-    }
-
-    .section-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .section-meta {
-      font-size: 0.7rem;
-      color: var(--text-soft);
-    }
-
-    /* --- Grid list --- */
-    .track-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem;
-    }
-
-    @media (max-width: 360px) {
-      /* Very tiny screens fallback to 1 column if needed */
-      .track-grid {
-        grid-template-columns: 1fr 1fr;
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#14b8a6',
+            dark: '#020617'
+          }
+        }
       }
     }
-
-    .track-card {
-      background: radial-gradient(circle at top left, rgba(45, 212, 191, 0.12), transparent 55%),
-                  var(--card);
-      border-radius: var(--radius-lg);
-      padding: 0.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      cursor: pointer;
-      transition: transform 0.14s ease-out, box-shadow 0.14s ease-out, border-color 0.14s;
-    }
-
-    .track-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
-      border-color: rgba(45, 212, 191, 0.4);
-    }
-
-    .track-title {
-      font-size: 0.82rem;
-      font-weight: 600;
-      line-height: 1.2;
-      min-height: 2.2em;
-    }
-
-    .track-meta-small {
-      font-size: 0.7rem;
-      color: var(--text-soft);
-    }
-
-    /* Image under the title */
-    .track-cover-wrapper {
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      position: relative;
-      background: #020617;
-      aspect-ratio: 4 / 3;
-    }
-
-    .track-cover {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transform: scale(1.02);
-    }
-
-    .track-cover-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(15, 23, 42, 0.8), transparent 50%);
-      pointer-events: none;
-    }
-
-    /* Controls */
-    .track-controls {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 0.15rem;
-      gap: 0.35rem;
-    }
-
-    .play-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      border-radius: 999px;
-      border: none;
-      padding: 0.35rem 0.7rem;
-      font-size: 0.78rem;
-      font-weight: 500;
-      background: var(--accent-soft);
-      color: var(--accent);
-      cursor: pointer;
-      outline: none;
-    }
-
-    .play-btn-icon {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      border: 1px solid rgba(45, 212, 191, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-    }
-
-    .track-extra {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-
-    .track-duration {
-      font-size: 0.7rem;
-      color: var(--text-soft);
-    }
-
-    .track-tag {
-      font-size: 0.62rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      margin-top: 0.15rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    /* --- Bottom mini player (optional) --- */
-    .bottom-player {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 0.8rem;
-      width: 100%;
-      max-width: 480px;
-      padding: 0 1rem;
-      pointer-events: none;
-      z-index: 40;
-    }
-
-    .bottom-player-inner {
-      pointer-events: auto;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.98);
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      padding: 0.35rem 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .mini-play {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      border: none;
-      background: var(--accent);
-      color: #022c22;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .mini-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .mini-title {
-      font-size: 0.8rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .mini-meta {
-      font-size: 0.65rem;
-      color: var(--text-soft);
-    }
-
-  </style>
+  </script>
 </head>
-<body>
-  <div class="app-shell">
+
+<body class="bg-dark text-white min-h-screen">
+
+  <!-- App Container -->
+  <div class="max-w-md mx-auto px-4 py-4 pb-24">
+
     <!-- Header -->
-    <header class="app-header">
-      <div class="logo-circle">T</div>
-      <div class="app-title-group">
-        <div class="app-title">Tafsiir App</div>
-        <div class="app-subtitle">Mobile tafsiir dashboard · audio</div>
+    <header class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-black">
+        T
+      </div>
+      <div>
+        <h1 class="text-xl font-bold">Tafsiir App</h1>
+        <p class="text-xs text-gray-400">Qur'an Tafsiir Audio</p>
       </div>
     </header>
 
-    <!-- Search + Filter row -->
-    <div class="top-controls">
-      <div class="search-input">
-        <input id="searchInput" type="text" placeholder="Search tafsiir..." />
-        <span class="search-input-icon">🔍</span>
-      </div>
-      <button class="filter-pill" type="button">
-        🔁 All
+    <!-- Search -->
+    <input
+      id="search"
+      type="text"
+      placeholder="Search tafsiir..."
+      class="w-full mb-4 px-4 py-2 rounded-full bg-slate-900 border border-slate-700 text-sm focus:outline-none focus:border-primary"
+    />
+
+    <!-- Grid -->
+    <main id="grid" class="grid grid-cols-2 gap-3"></main>
+
+  </div>
+
+  <!-- Mini Player -->
+  <div
+    id="player"
+    class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[95%] max-w-md hidden"
+  >
+    <div class="bg-slate-900 border border-slate-700 rounded-full px-4 py-2 flex items-center gap-3">
+      <button
+        id="playPause"
+        class="w-9 h-9 rounded-full bg-primary text-black flex items-center justify-center"
+      >
+        ▶
       </button>
-    </div>
-
-    <!-- Section heading -->
-    <div class="section-heading">
-      <h2 class="section-title">Latest Tafsiir Sessions</h2>
-      <span class="section-meta" id="trackCount">0 tracks</span>
-    </div>
-
-    <!-- Grid list -->
-    <main class="track-grid" id="trackGrid">
-      <!-- Cards will be injected by JavaScript -->
-    </main>
-  </div>
-
-  <!-- Bottom mini player -->
-  <div class="bottom-player" id="bottomPlayer" style="display:none;">
-    <div class="bottom-player-inner">
-      <button class="mini-play" id="miniPlayBtn">▶</button>
-      <div class="mini-info">
-        <div class="mini-title" id="miniTitle">No track</div>
-        <div class="mini-meta" id="miniMeta">00:00</div>
+      <div class="overflow-hidden">
+        <p id="nowTitle" class="text-sm font-semibold truncate">—</p>
+        <p id="nowMeta" class="text-xs text-gray-400">Paused</p>
       </div>
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
-    // --- Dummy data: replace audioSrc with your real tafsiir mp3 files ---
-    const tracks = [
+    const data = [
       {
         id: 1,
-        title: "Tafsiir Surah Al-Faatiha",
-        reciter: "Sheekh Example 1",
-        duration: "12:34",
-        tag: "Surah",
-        audioSrc: "audio/tafsiir_faatiha.mp3",
-        cover: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg?auto=compress&cs=tinysrgb&w=400"
+        title: "Tafsiir Al-Faatiha",
+        sheikh: "Sheikh Example",
+        audio: "audio/faatiha.mp3",
+        image: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg"
       },
       {
         id: 2,
-        title: "Tafsiir Ayatul Kursi",
-        reciter: "Sheekh Example 2",
-        duration: "18:09",
-        tag: "Ayah",
-        audioSrc: "audio/tafsiir_ayatul_kursi.mp3",
-        cover: "https://images.pexels.com/photos/532792/pexels-photo-532792.jpeg?auto=compress&cs=tinysrgb&w=400"
+        title: "Ayatul Kursi Tafsiir",
+        sheikh: "Sheikh Example",
+        audio: "audio/kursi.mp3",
+        image: "https://images.pexels.com/photos/532792/pexels-photo-532792.jpeg"
       },
       {
         id: 3,
-        title: "Tafsiir Juz Amma – Part 1",
-        reciter: "Sheekh Example 3",
-        duration: "25:41",
-        tag: "Juz",
-        audioSrc: "audio/tafsiir_juz_amma_1.mp3",
-        cover: "https://images.pexels.com/photos/243316/pexels-photo-243316.jpeg?auto=compress&cs=tinysrgb&w=400"
+        title: "Juz Amma (Part 1)",
+        sheikh: "Sheikh Example",
+        audio: "audio/juz1.mp3",
+        image: "https://images.pexels.com/photos/243316/pexels-photo-243316.jpeg"
       },
       {
         id: 4,
-        title: "Tafsiir Surah Yaasin",
-        reciter: "Sheekh Example 4",
-        duration: "30:12",
-        tag: "Surah",
-        audioSrc: "audio/tafsiir_yaasin.mp3",
-        cover: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg?auto=compress&cs=tinysrgb&w=400"
+        title: "Surah Yaasin Tafsiir",
+        sheikh: "Sheikh Example",
+        audio: "audio/yaasin.mp3",
+        image: "https://images.pexels.com/photos/159711/book-books-education-literature-159711.jpeg"
       }
     ];
 
-    const trackGrid = document.getElementById("trackGrid");
-    const trackCount = document.getElementById("trackCount");
-    const searchInput = document.getElementById("searchInput");
+    const grid = document.getElementById("grid");
+    const search = document.getElementById("search");
+    const player = document.getElementById("player");
+    const playPause = document.getElementById("playPause");
+    const nowTitle = document.getElementById("nowTitle");
+    const nowMeta = document.getElementById("nowMeta");
 
-    const bottomPlayer = document.getElementById("bottomPlayer");
-    const miniPlayBtn = document.getElementById("miniPlayBtn");
-    const miniTitle = document.getElementById("miniTitle");
-    const miniMeta = document.getElementById("miniMeta");
-
-    // Single audio element for the whole app
     const audio = new Audio();
-    let currentTrackId = null;
-    let isPlaying = false;
+    let currentId = null;
 
-    function renderTracks(filterText = "") {
-      const lower = filterText.trim().toLowerCase();
-
-      const filtered = tracks.filter(t =>
-        t.title.toLowerCase().includes(lower) ||
-        t.reciter.toLowerCase().includes(lower)
-      );
-
-      trackGrid.innerHTML = "";
-      filtered.forEach(track => {
-        const card = document.createElement("article");
-        card.className = "track-card";
-        card.dataset.id = track.id;
+    function render(list) {
+      grid.innerHTML = "";
+      list.forEach(item => {
+        const card = document.createElement("div");
+        card.className =
+          "bg-slate-900 border border-slate-800 rounded-xl p-2 flex flex-col gap-2";
 
         card.innerHTML = `
-          <div>
-            <div class="track-title">${track.title}</div>
-            <div class="track-meta-small">${track.reciter}</div>
-          </div>
+          <h3 class="text-sm font-semibold leading-tight min-h-[2.5rem]">
+            ${item.title}
+          </h3>
 
-          <div class="track-cover-wrapper">
-            <img class="track-cover" src="${track.cover}" alt="${track.title} cover" />
-            <div class="track-cover-overlay"></div>
-          </div>
+          <img
+            src="${item.image}"
+            class="rounded-lg aspect-[4/3] object-cover"
+          />
 
-          <div class="track-controls">
-            <button class="play-btn" type="button">
-              <span class="play-btn-icon">▶</span>
-              <span class="play-btn-label">Play</span>
-            </button>
-            <div class="track-extra">
-              <span class="track-duration">${track.duration}</span>
-              <span class="track-tag">${track.tag}</span>
-            </div>
-          </div>
+          <button
+            class="mt-1 text-xs text-primary border border-primary/30 rounded-full py-1"
+          >
+            ▶ Play
+          </button>
         `;
 
-        const playButton = card.querySelector(".play-btn");
-        playButton.addEventListener("click", (event) => {
-          event.stopPropagation();
-          onPlayClick(track.id, playButton);
-        });
-
-        // whole card can also play
-        card.addEventListener("click", () => {
-          onPlayClick(track.id, playButton);
-        });
-
-        trackGrid.appendChild(card);
+        card.querySelector("button").onclick = () => play(item);
+        grid.appendChild(card);
       });
-
-      trackCount.textContent = `${filtered.length} track${filtered.length !== 1 ? "s" : ""}`;
     }
 
-    function setPlayButtonState(trackId) {
-      document.querySelectorAll(".track-card").forEach(card => {
-        const btn = card.querySelector(".play-btn");
-        const icon = card.querySelector(".play-btn-icon");
-        const label = card.querySelector(".play-btn-label");
-        const id = Number(card.dataset.id);
-
-        if (!btn || !icon || !label) return;
-
-        if (isPlaying && id === trackId) {
-          icon.textContent = "⏸";
-          label.textContent = "Pause";
-        } else {
-          icon.textContent = "▶";
-          label.textContent = "Play";
-        }
-      });
-
-      if (!currentTrackId) {
-        bottomPlayer.style.display = "none";
-        return;
-      }
-
-      const track = tracks.find(t => t.id === currentTrackId);
-      if (track) {
-        bottomPlayer.style.display = "block";
-        miniTitle.textContent = track.title;
-        miniMeta.textContent = isPlaying ? "Playing · " + track.duration : "Paused · " + track.duration;
-        miniPlayBtn.textContent = isPlaying ? "⏸" : "▶";
-      }
-    }
-
-    function onPlayClick(trackId) {
-      const track = tracks.find(t => t.id === trackId);
-      if (!track) return;
-
-      // If clicking the currently selected track
-      if (currentTrackId === trackId) {
-        if (isPlaying) {
-          audio.pause();
-        } else {
-          audio.play().catch(() => {});
-        }
-        // toggle will be updated in audio event listeners
-        return;
-      }
-
-      // New track
-      currentTrackId = trackId;
-      audio.src = track.audioSrc;
-      audio.play()
-        .then(() => {
-          isPlaying = true;
-          setPlayButtonState(trackId);
-        })
-        .catch(err => {
-          console.error("Cannot play audio:", err);
-          isPlaying = false;
-          setPlayButtonState(trackId);
-          alert("Audio file not found. Replace audioSrc with a valid path.");
-        });
-    }
-
-    // audio events
-    audio.addEventListener("play", () => {
-      isPlaying = true;
-      setPlayButtonState(currentTrackId);
-    });
-
-    audio.addEventListener("pause", () => {
-      isPlaying = false;
-      setPlayButtonState(currentTrackId);
-    });
-
-    audio.addEventListener("ended", () => {
-      isPlaying = false;
-      setPlayButtonState(currentTrackId);
-    });
-
-    // mini player button
-    miniPlayBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (!currentTrackId) return;
-
-      if (isPlaying) {
+    function play(item) {
+      if (currentId === item.id && !audio.paused) {
         audio.pause();
-      } else {
-        audio.play().catch(() => {});
+        return;
       }
-    });
 
-    // search
-    searchInput.addEventListener("input", () => {
-      renderTracks(searchInput.value);
-    });
+      audio.src = item.audio;
+      audio.play().catch(() => alert("Audio file not found"));
+      currentId = item.id;
 
-    // initial render
-    renderTracks();
+      nowTitle.textContent = item.title;
+      nowMeta.textContent = item.sheikh;
+      player.classList.remove("hidden");
+    }
+
+    playPause.onclick = () => {
+      if (audio.paused) audio.play();
+      else audio.pause();
+    };
+
+    audio.onplay = () => playPause.textContent = "⏸";
+    audio.onpause = () => playPause.textContent = "▶";
+
+    search.oninput = () => {
+      const v = search.value.toLowerCase();
+      render(data.filter(d => d.title.toLowerCase().includes(v)));
+    };
+
+    render(data);
   </script>
+
 </body>
 </html>
